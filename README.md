@@ -48,11 +48,13 @@ Hello World!
 
 <p>At this point, we have a basic rack application that we can use to test our rack middleware. Now let's get started.</p>
 
+
 ## Redis
 
 <p>We need a way to memorize the number of requests that users are making to our web service if we want to limit the rate at which they can use the API. Every time they make a request, we want to check if they've gone past their rate limit before we respond to the request. We also want to store the fact that they've just made a request. Since every call to our web service requires this check and memorization process, we would like this to be done as fast as possible.</p>
 
 <p>This is where Redis comes in. Redis is a super-fast key-value database that we've highlighted <a href="http://blog.messagepub.com/2009/04/20/project-spotlight-redis-a-fast-data-structure-database/">in a previous blog post</a>. It can do about 110,000 SETs per second, about 81,000 GETs per second. That's the kind of performance that we are looking for since we would not like our 'rate limiting' middleware to reduce the performance of our web service.</p>
+
 
 ## Our Rack Middleware
 
