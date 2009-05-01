@@ -15,11 +15,8 @@
 <p>We are going to use the following 'Hello World' Rack application to test our API Throttling middleware.</p> 
 
 <pre>
-require 'api_throttling'
-
 use Rack::ShowExceptions
 use Rack::Lint
-use ApiThrottling, :requests_per_hour => 5
 
 run lambda {|env| [200, {}, ["Hello World!"] ] }
 </pre>
