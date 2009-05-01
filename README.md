@@ -1,12 +1,12 @@
-<h1>Rack Middleware for Api Throttling</h1>
+# Rack Middleware for Api Throttling
 
 <p>In this blog post, I will show you a technique to impose a rate limit (aka API Throttling) on a Ruby Web Service. I will be using Rack middleware so you can use this no matter what Ruby Web Framework you are using, as long as it is Rack-compliant.</p>
 
-<h2>Introduction to Rack</h2>
+## Introduction to Rack
 
 <p>There are plenty of <a href="http://jasonseifer.com/2009/04/08/32-rack-resources-to-get-you-started">great resources</a> to learn the basic of Rack so I will not be explaining how Rack works here but you will need to understand it in order to follow this post. I highly recommend watching the <a href="http://remi.org/2009/02/19/rack-basics.html">three</a> <a href="http://remi.org/2009/02/24/rack-part-2.html">Rack</a> <a href="http://remi.org/2009/02/28/rack-part-3-middleware.html">screencasts</a> from <a href="http://remi.org/">Remi</a> to get started with Rack.</p>
 
-</h2>Basic Rack Application</h2>
+## Basic Rack Application
 
 <p>First, make sure you have the <a href="http://code.macournoyer.com/thin/">thin webserver</a> installed.</p>
 
@@ -48,13 +48,13 @@ Hello World!
 
 <p>At this point, we have a basic rack application that we can use to test our rack middleware. Now let's get started.</p>
 
-<h3>Redis</h3>
+## Redis
 
 <p>We need a way to memorize the number of requests that users are making to our web service if we want to limit the rate at which they can use the API. Every time they make a request, we want to check if they've gone past their rate limit before we respond to the request. We also want to store the fact that they've just made a request. Since every call to our web service requires this check and memorization process, we would like this to be done as fast as possible.</p>
 
 <p>This is where Redis comes in. Redis is a super-fast key-value database that we've highlighted <a href="http://blog.messagepub.com/2009/04/20/project-spotlight-redis-a-fast-data-structure-database/">in a previous blog post</a>. It can do about 110,000 SETs per second, about 81,000 GETs per second. That's the kind of performance that we are looking for since we would not like our 'rate limiting' middleware to reduce the performance of our web service.</p>
 
-<h3>Our Rack Middleware</h3>
+## Our Rack Middleware
 
 <p>We are assuming that the web service is using HTTP Basic Authentication. You could use another type of authentication and adapt the code to fit your model.</p>
 
