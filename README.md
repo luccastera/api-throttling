@@ -80,7 +80,7 @@ return over_rate_limit if r[key].to_i > @options[:requests_per_hour]
 
 <p>Finally, we want anyone who might use this Rack middleware to be able to set their limit via the <em>requests_per_hour</em> option.</p>
 
-<p>The full code for our middleware is below. You can also find it on github.</p>
+<p>The full code for our middleware is below. You can also find it at <a href="https://github.com/dambalah/api-throttling">github.com/dambalah/api-throttling</a>.</p>
 
 <pre>
 require 'rubygems'
