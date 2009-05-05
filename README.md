@@ -6,7 +6,7 @@
 
 <p>There are plenty of <a href="http://jasonseifer.com/2009/04/08/32-rack-resources-to-get-you-started">great resources</a> to learn the basic of Rack so I will not be explaining how Rack works here but you will need to understand it in order to follow this post. I highly recommend watching the <a href="http://remi.org/2009/02/19/rack-basics.html">three</a> <a href="http://remi.org/2009/02/24/rack-part-2.html">Rack</a> <a href="http://remi.org/2009/02/28/rack-part-3-middleware.html">screencasts</a> from <a href="http://remi.org/">Remi</a> to get started with Rack.</p>
 
-## Basic Rack Application
+<h2>Basic Rack Application</h2>
 
 <p>First, make sure you have the <a href="http://code.macournoyer.com/thin/">thin webserver</a> installed.</p>
 
