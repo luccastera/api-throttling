@@ -18,7 +18,7 @@
 use Rack::ShowExceptions
 use Rack::Lint
 
-run lambda {|env| [200, {}, ["Hello World!"] ] }
+run lambda {|env| [200, { 'Content-Type' => 'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
 </pre>
 
 
