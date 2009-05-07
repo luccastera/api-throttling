@@ -33,7 +33,14 @@ class ApiThrottling
   
   def over_rate_limit
     body_text = "Over Rate Limit"
-    [ 503, { 'Content-Type' => 'text/plain', 'Content-Length' => body_text.size.to_s }, [body_text] ]
+    retry_after_in_seconds = (60 - Time.now.min) * 60
+    [ 503, 
+      { 'Content-Type' => 'text/plain', 
+        'Content-Length' => body_text.size.to_s, 
+        'Retry-After' => retry_after_in_seconds.to_s 
+      }, 
+      [body_text]
+    ]
   end
 end
 

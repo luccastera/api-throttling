@@ -20,9 +20,17 @@ class ApiThrottlingTest < Test::Unit::TestCase
   
   def setup
     # Delete all the keys for 'joe' in Redis so that every test starts fresh
-    r = Redis.new
-    r.keys("joe*").each do |key|
-      r.delete key
+    # Having this here also helps as a reminder to start redis-server
+    begin
+		  r = Redis.new
+		  r.keys("joe*").each do |key|
+		    r.delete key
+		  end
+		  r.keys("luc*").each do |key|
+		    r.delete key
+		  end
+    rescue Errno::ECONNREFUSED
+      assert false, "You need to start redis-server"
     end
   end
   
@@ -58,6 +66,26 @@ class ApiThrottlingTest < Test::Unit::TestCase
     authorize "luc", "secret"
     get '/'
     assert_equal 200, last_response.status
+  end
+  
+  def test_over_rate_limit_should_return_a_retry_after_header
+    authorize "joe", "secret"
+    get '/'
+    get '/'
+    get '/'
+    get '/'
+    assert_equal 503, last_response.status
+    assert_not_nil last_response.headers['Retry-After']
+  end
+  
+  def test_retry_after_should_be_less_than_60_minutes
+    authorize "joe", "secret"
+    get '/'
+    get '/'
+    get '/'
+    get '/'
+    assert_equal 503, last_response.status
+    assert last_response.headers['Retry-After'].to_i <= (60 * 60)
   end
   
 end
