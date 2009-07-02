@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'rack/test'
 require 'test/unit'
-require 'api_throttling'
 require 'redis'
+require File.expand_path(File.dirname(__FILE__) + '/../lib/api_throttling')
 
 #  To Run this test, you need to have the redis-server running.
 #  And you need to have rack-test gem installed: sudo gem install rack-test

@@ -52,6 +52,8 @@ Hello World!
 
 <p>This is where Redis comes in. Redis is a super-fast key-value database that we've highlighted <a href="http://blog.messagepub.com/2009/04/20/project-spotlight-redis-a-fast-data-structure-database/">in a previous blog post</a>. It can do about 110,000 SETs per second, about 81,000 GETs per second. That's the kind of performance that we are looking for since we would not like our 'rate limiting' middleware to reduce the performance of our web service.</p>
 
+<p>Install the redis ruby client library with <pre>sudo gem install ezmobius-redis-rb</pre></p>
+
 
 <h2>Our Rack Middleware</h2>
 
