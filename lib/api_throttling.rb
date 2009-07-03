@@ -1,11 +1,13 @@
 require 'rubygems'
 require 'rack'
-require 'redis'
+require File.expand_path(File.dirname(__FILE__) + '/handlers/handlers')
 
 class ApiThrottling
   def initialize(app, options={})
     @app = app
-    @options = {:requests_per_hour => 60}.merge(options)
+    @options = {:requests_per_hour => 60, :cache=>:redis}.merge(options)
+    @handler = Handlers.cache_handler_for(@options[:cache])
+    raise "Sorry, we couldn't find a handler for the cache you specified: #{@options[:cache]}" unless @handler
   end
   
   def call(env, options={})
@@ -13,10 +15,10 @@ class ApiThrottling
     if auth.provided?
       return bad_request unless auth.basic?
 		  begin
-		    r = Redis.new
+		    cache = @handler.new(@options[:cache])
 		    key = "#{auth.username}_#{Time.now.strftime("%Y-%m-%d-%H")}"
-		    r.incr(key)
-		    return over_rate_limit if r[key].to_i > @options[:requests_per_hour]
+		    cache.increment(key)
+		    return over_rate_limit if cache.get(key).to_i > @options[:requests_per_hour]
 		  rescue Errno::ECONNREFUSED
 		    # If Redis-server is not running, instead of throwing an error, we simply do not throttle the API
 		    # It's better if your service is up and running but not throttling API, then to have it throw errors for all users
