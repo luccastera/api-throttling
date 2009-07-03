@@ -33,11 +33,11 @@ module Handlers
     end
   end
   
-  %w(redis_handler memcache_handler).each do |handler|
+  %w(redis_handler memcache_handler hash_handler).each do |handler|
     require File.expand_path(File.dirname(__FILE__) + "/#{handler}")
   end
   
-  HANDLERS = [RedisHandler, MemCacheHandler]
+  HANDLERS = [RedisHandler, MemCacheHandler, HashHandler]
   
   def self.cache_handler_for(info)
     HANDLERS.detect{|handler| handler.handles?(info)}
