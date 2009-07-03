@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{api-throttling}
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luc Castera", "John Duff"]
-  s.date = %q{2009-07-02}
+  s.date = %q{2009-07-03}
   s.description = %q{TODO}
   s.email = %q{duff.john@gmail.com}
   s.extra_rdoc_files = [
@@ -18,8 +18,15 @@ Gem::Specification.new do |s|
     "README.md",
     "Rakefile",
     "TODO.md",
+    "VERSION.yml",
     "lib/api_throttling.rb",
-    "test/test_api_throttling.rb"
+    "lib/handlers/handlers.rb",
+    "lib/handlers/memcache_handler.rb",
+    "lib/handlers/redis_handler.rb",
+    "test/test_api_throttling.rb",
+    "test/test_api_throttling_memcache.rb",
+    "test/test_handlers.rb",
+    "test/test_helper.rb"
   ]
   s.has_rdoc = true
   s.homepage = %q{http://github.com/jduff/api-throttling/tree}
@@ -28,7 +35,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.1}
   s.summary = %q{Rack Middleware to impose a rate limit on a web service (aka API Throttling)}
   s.test_files = [
-    "test/test_api_throttling.rb"
+    "test/test_api_throttling.rb",
+    "test/test_api_throttling_memcache.rb",
+    "test/test_handlers.rb",
+    "test/test_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
