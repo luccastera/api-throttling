@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{api-throttling}
-  s.version = "0.2.0"
+  s.version = "0.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Luc Castera", "John Duff"]
@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
     "TODO.md",
     "VERSION.yml",
     "lib/api_throttling.rb",
+    "lib/handlers/active_support_cache_store_handler.rb",
     "lib/handlers/handlers.rb",
     "lib/handlers/hash_handler.rb",
     "lib/handlers/memcache_handler.rb",
