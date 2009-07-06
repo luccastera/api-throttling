@@ -2,6 +2,28 @@
 
 <p>I will show you a technique to impose a rate limit (aka API Throttling) on a Ruby Web Service. I will be using Rack middleware so you can use this no matter what Ruby Web Framework you are using, as long as it is Rack-compliant.</p>
 
+<h2>Installation</h2>
+<p>This middleware has recently been gemmified, you can install the latest gem using:</p>
+<pre>sudo gem install jduff-api-throttling</pre>
+<p>If you prefer to have the latest source it can be found at http://github.com/jduff/api-throttling/tree (this is a fork of http://github.com/dambalah/api-throttling/tree with a number of recent changes)</p>
+
+<h2>Usage</h2>
+<p>In your rack application simply use the middleware and pass it some options</p>
+<pre>use ApiThrottling, :requests_per_hour => 3</pre>
+<p>This will setup throttling with a limit of 3 requests per hour and will use a Redis cache to keep track of it. By default Rack::Auth::Basic is used to limit the requests on a per user basis.</p>
+<p>A number of options can be passed to the middleware so it can be configured as needed for your stack.</p>
+<pre>:cache=>:redis # :memcache, :hash are supported. you can also pass in an instance of those caches, or even Rails.cache</pre>
+<pre>:auth=>false # if your middleware is doing authentication somewhere else</pre>
+<pre>:key=>Proc.new{|env,auth| "#{env['PATH_INFO']}_#{Time.now.strftime("%Y-%m-%d-%H")}" } # to customize how the cache key is generated</pre>
+
+<p>An example using all the options might look something like this:</p>
+<pre>
+  CACHE = MemCache.new
+  use ApiThrottling, :requests_per_hour => 100, :cache=>CACHE, :auth=>false, 
+                     :key=>Proc.new{|env,auth| "#{env['PATH_INFO']}_#{Time.now.strftime("%Y-%m-%d-%H")}" } 
+</pre>
+<p>This will limit requests to 100 per hour per url ('/home' will be tracked separately from '/users') keeping track by storing the counts with MemCache.</p>
+
 <h2>Introduction to Rack</h2>
 
 <p>There are plenty of <a href="http://jasonseifer.com/2009/04/08/32-rack-resources-to-get-you-started">great resources</a> to learn the basic of Rack so I will not be explaining how Rack works here but you will need to understand it in order to follow this post. I highly recommend watching the <a href="http://remi.org/2009/02/19/rack-basics.html">three</a> <a href="http://remi.org/2009/02/24/rack-part-2.html">Rack</a> <a href="http://remi.org/2009/02/28/rack-part-3-middleware.html">screencasts</a> from <a href="http://remi.org/">Remi</a> to get started with Rack.</p>
