@@ -10,6 +10,7 @@ begin
     gemspec.homepage = "http://github.com/jduff/api-throttling/tree"
     gemspec.description = "TODO"
     gemspec.authors = ["Luc Castera", "John Duff"]
+    gemspec.add_development_dependency('context')
   end
 rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install technicalpickles-jeweler -s http://gems.github.com"

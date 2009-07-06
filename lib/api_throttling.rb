@@ -19,7 +19,7 @@ class ApiThrottling
     
     begin
 	    cache = @handler.new(@options[:cache])
-	    key = generate_key(auth)
+	    key = generate_key(env, auth)
 	    cache.increment(key)
 	    return over_rate_limit if cache.get(key).to_i > @options[:requests_per_hour]
 	  rescue Errno::ECONNREFUSED
@@ -30,7 +30,8 @@ class ApiThrottling
     @app.call(env)
   end
   
-  def generate_key(auth)
+  def generate_key(env, auth)
+    return @options[:key].call(env, auth) if @options[:key]
     auth ? "#{auth.username}_#{Time.now.strftime("%Y-%m-%d-%H")}" : "#{Time.now.strftime("%Y-%m-%d-%H")}"
   end
   

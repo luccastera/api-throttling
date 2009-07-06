@@ -57,7 +57,39 @@ class ApiThrottlingTest < Test::Unit::TestCase
       end
     end
     
-    
+    context "with rate limit key based on url" do
+      def app
+        app = Rack::Builder.new {
+          use ApiThrottling, :requests_per_hour => 3, 
+                             :key=>Proc.new{ |env,auth| "#{auth.username}_#{env['PATH_INFO']}_#{Time.now.strftime("%Y-%m-%d-%H")}" }
+          run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
+        }
+      end
+      
+      test "should throttle requests based on the user and url called" do
+        authorize "joe", "secret"
+        3.times do
+          get '/'
+          assert_equal 200, last_response.status
+        end
+        get '/'
+        assert_equal 503, last_response.status
+        
+        3.times do
+          get '/awesome'
+          assert_equal 200, last_response.status
+        end
+        get '/awesome'
+        assert_equal 503, last_response.status
+        
+        authorize "luc", "secret"
+        get '/awesome'
+        assert_equal 200, last_response.status
+        
+        get '/'
+        assert_equal 200, last_response.status
+      end
+    end
   end
   
 end
