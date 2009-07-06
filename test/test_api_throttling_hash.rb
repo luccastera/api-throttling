@@ -7,7 +7,7 @@ class TestApiThrottlingHash < Test::Unit::TestCase
 
   def app
     app = Rack::Builder.new {
-      use ApiThrottling, :requests_per_hour => 3, :cache => HASH, :read_method=>"get", :write_method=>"add"
+      use ApiThrottling, :requests_per_hour => 3, :cache => HASH
       run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
     }
   end
