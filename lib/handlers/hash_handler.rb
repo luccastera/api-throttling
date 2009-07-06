@@ -9,5 +9,7 @@ module Handlers
     def get(key)
       @cache[key]
     end
+    
+    Handlers.add_handler self
   end
 end

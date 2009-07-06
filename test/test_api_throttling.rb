@@ -1,5 +1,5 @@
-require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 require 'redis'
+require File.expand_path(File.dirname(__FILE__) + '/test_helper')
 
 #  To Run this test, you need to have the redis-server running.
 #  And you need to have rack-test gem installed: sudo gem install rack-test

@@ -1,4 +1,3 @@
-require 'redis'
 module Handlers
   class RedisHandler < Handler
     cache_class "Redis"
@@ -10,5 +9,7 @@ module Handlers
     def get(key)
       @cache[key]
     end
+    
+    Handlers.add_handler self
   end
 end

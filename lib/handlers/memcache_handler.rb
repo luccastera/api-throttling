@@ -1,4 +1,3 @@
-require 'memcache'
 module Handlers
   class MemCacheHandler < Handler
     cache_class "MemCache"
@@ -10,6 +9,7 @@ module Handlers
     def get(key)
       @cache.get(key)
     end
-
+    
+    Handlers.add_handler self
   end
 end
