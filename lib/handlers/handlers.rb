@@ -5,8 +5,8 @@ module Handlers
     HANDLERS[info.to_s.downcase] || HANDLERS[info.class.to_s.downcase]
   end
   
-  def self.add_handler(handler)
-    HANDLERS[handler.cache_class.downcase] = handler
+  def self.add_handler(handler, key=nil)
+    HANDLERS[key || handler.cache_class.downcase] = handler
   end
   
   # creating a new cache handler is as simple as extending from the handler class,
@@ -40,7 +40,7 @@ module Handlers
     end
   end
 
-  %w(redis_handler memcache_handler hash_handler).each do |handler|
+  %w(redis_handler memcache_handler hash_handler active_support_cache_store_handler).each do |handler|
     require File.expand_path(File.dirname(__FILE__) + "/#{handler}")
   end  
 end

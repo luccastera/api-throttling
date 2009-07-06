@@ -92,4 +92,48 @@ class ApiThrottlingTest < Test::Unit::TestCase
     end
   end
   
+  context "using active support cache store" do
+    require 'active_support'
+    
+    context "memory store" do
+      include BasicTests
+
+      before do
+        @@cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
+      end
+      
+      def app
+        app = Rack::Builder.new {
+          use ApiThrottling, :requests_per_hour => 3, :cache=>@@cache_store
+          run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
+        }
+      end
+      
+      def test_cache_handler_should_be_memcache
+        assert_equal "Handlers::ActiveSupportCacheStoreHandler", app.to_app.instance_variable_get(:@handler).to_s
+      end
+    end
+    
+    context "memcache store" do
+      include BasicTests
+      
+      
+      before do
+        @@cache_store = ActiveSupport::Cache.lookup_store(:memCache_store)
+        @@cache_store.clear
+      end
+      
+      def app
+        app = Rack::Builder.new {
+          use ApiThrottling, :requests_per_hour => 3, :cache=>@@cache_store
+          run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
+        }
+      end
+      
+      def test_cache_handler_should_be_memcache
+        assert_equal "Handlers::ActiveSupportCacheStoreHandler", app.to_app.instance_variable_get(:@handler).to_s
+      end
+    end
+  end
+  
 end
