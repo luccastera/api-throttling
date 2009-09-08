@@ -6,7 +6,7 @@ module Handlers
       @cache = object
     end
     
-    def increment(key)
+    def increment(key)    
       @cache.write(key, (get(key)||0).to_i+1)
     end
     

@@ -27,13 +27,13 @@ class ApiThrottlingTest < Test::Unit::TestCase
       include BasicTests
       
       def app
-        app = Rack::Builder.new {
+        Rack::Builder.new {
           use ApiThrottling, :requests_per_hour => 3
           run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
         }
       end
     
-      def test_cache_handler_should_be_redis
+      should "have Redis as cache handler" do
         assert_equal "Handlers::RedisHandler", app.to_app.instance_variable_get(:@handler).to_s
       end
       
@@ -41,13 +41,13 @@ class ApiThrottlingTest < Test::Unit::TestCase
     
     context "without authentication required" do
       def app
-        app = Rack::Builder.new {
-          use ApiThrottling, :requests_per_hour => 3, :auth=>false
+        Rack::Builder.new {
+          use ApiThrottling, :requests_per_hour => 3, :auth => false
           run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
         }
       end
 
-      def test_should_not_require_authorization
+      should "not require authorization" do
         3.times do
           get '/'
           assert_equal 200, last_response.status
@@ -59,14 +59,14 @@ class ApiThrottlingTest < Test::Unit::TestCase
     
     context "with rate limit key based on url" do
       def app
-        app = Rack::Builder.new {
+        Rack::Builder.new {
           use ApiThrottling, :requests_per_hour => 3, 
                              :key=>Proc.new{ |env,auth| "#{auth.username}_#{env['PATH_INFO']}_#{Time.now.strftime("%Y-%m-%d-%H")}" }
           run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
         }
       end
       
-      test "should throttle requests based on the user and url called" do
+      should "throttle requests based on the user and url called" do
         authorize "joe", "secret"
         3.times do
           get '/'
@@ -92,48 +92,49 @@ class ApiThrottlingTest < Test::Unit::TestCase
     end
   end
   
-  context "using active support cache store" do
+  context "using active support memory store" do
     require 'active_support'
     
-    context "memory store" do
-      include BasicTests
+    include BasicTests
 
-      before do
-        @@cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
-      end
-      
-      def app
-        app = Rack::Builder.new {
-          use ApiThrottling, :requests_per_hour => 3, :cache=>@@cache_store
-          run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
-        }
-      end
-      
-      def test_cache_handler_should_be_memcache
-        assert_equal "Handlers::ActiveSupportCacheStoreHandler", app.to_app.instance_variable_get(:@handler).to_s
-      end
+    before do
+      @@cache_store = ActiveSupport::Cache.lookup_store(:memory_store)
     end
     
-    context "memcache store" do
-      include BasicTests
-      
-      
-      before do
-        @@cache_store = ActiveSupport::Cache.lookup_store(:memCache_store)
-        @@cache_store.clear
-      end
-      
-      def app
-        app = Rack::Builder.new {
-          use ApiThrottling, :requests_per_hour => 3, :cache=>@@cache_store
-          run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
-        }
-      end
-      
-      def test_cache_handler_should_be_memcache
-        assert_equal "Handlers::ActiveSupportCacheStoreHandler", app.to_app.instance_variable_get(:@handler).to_s
-      end
+    def app
+      Rack::Builder.new {
+        use ApiThrottling, :requests_per_hour => 3, :cache => @@cache_store
+        run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
+      }
+    end
+    
+    should "have memcache as cache handler" do
+      assert_equal "Handlers::ActiveSupportCacheStoreHandler", app.to_app.instance_variable_get(:@handler).to_s
     end
   end
+    
+    
+  context "using active support memcache store" do
+    require 'active_support'
+    
+    #include BasicTests
+    
+    before do      
+      @@cache_store = ActiveSupport::Cache.lookup_store(:memCache_store)
+      @@cache_store.clear
+    end
+    
+    def app
+      Rack::Builder.new {
+        use ApiThrottling, :requests_per_hour => 3, :cache => @@cache_store
+        run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
+      }
+    end
+    
+    should "have memcache as cache handler" do
+      assert_equal "Handlers::ActiveSupportCacheStoreHandler", app.to_app.instance_variable_get(:@handler).to_s
+    end
+  end
+
   
 end
