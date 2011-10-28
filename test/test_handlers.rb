@@ -13,11 +13,11 @@ class HandlersTest < Test::Unit::TestCase
       assert_equal Handlers::MemCacheHandler, Handlers.cache_handler_for(key)
     end
   end
-  
+
   should "select hash handler" do
     [:hash, 'hash', 'Hash', {}].each do |key|
       assert_equal Handlers::HashHandler, Handlers.cache_handler_for(key)
     end
   end
-  
+
 end

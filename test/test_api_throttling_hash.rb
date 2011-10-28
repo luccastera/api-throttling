@@ -11,11 +11,11 @@ class TestApiThrottlingHash < Test::Unit::TestCase
       run lambda {|env| [200, {'Content-Type' =>  'text/plain', 'Content-Length' => '12'}, ["Hello World!"] ] }
     }
   end
-  
+
   def setup
     HASH.replace({})
   end
-  
+
   def test_cache_handler_should_be_memcache
     assert_equal "Handlers::HashHandler", app.to_app.instance_variable_get(:@handler).to_s
   end
